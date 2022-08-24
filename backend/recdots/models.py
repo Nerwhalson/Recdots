@@ -8,11 +8,13 @@ class User(models.Model):
     user_name = models.CharField(max_length=255)
     gender = models.CharField(max_length=255)
     age = models.IntegerField()
+    create_date = models.DateField()
 
 
 class Item(models.Model):
     item_id = models.IntegerField()
     item_name = models.CharField(max_length=255)
+    create_date = models.DateField()
 
 
 class Behavior(models.Model):

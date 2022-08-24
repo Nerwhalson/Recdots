@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    
+
+    'django_crontab',    # only work on linux
     "recdots", 
 ]
 
@@ -87,7 +88,7 @@ WSGI_APPLICATION = "backend.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'recdots_db.db',
+        'NAME': 'RecdotsDB.db',
         'USER': '',
         'PASSWORD': '',
         'HOST': '',
@@ -129,3 +130,9 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# only work on linux
+CRONJOBS = [
+    ('0 */24 * * *', 'recdots.corn.offline_training','>>/offline_training_crontab.log')
+]

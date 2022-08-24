@@ -15,12 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-# import views
+from recdots import views as recdots_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # path("Recommend", views.recommend),
-    path("ReportBehavior", admin.site.urls),
-    path("ReportItem", admin.site.urls),
-    path("ReportFeedUser", admin.site.urls),
+    path("Recommend", recdots_views.recommend),
+    path("ReportBehavior", recdots_views.report_behavior),
+    path("ReportItem", recdots_views.report_item),
+    path("ReportFeedUser", recdots_views.report_user),
 ]
