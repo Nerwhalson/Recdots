@@ -19,7 +19,12 @@ def report_user(request):
     if request.method == "POST":
         user_list = request.POST.getlist("UserList", [])
         for user in user_list:
-            models.Item.objects.create(user_id=user['ItemId'], user_name=user["ItemName"], age=user["Age"], gender=user["Gender"], create_date=now())
+            models.Item.objects.create(
+                user_id=user['ItemId'], 
+                user_name=user["ItemName"], 
+                age=user["Age"], 
+                gender=user["Gender"], 
+                create_date=now())
         return HttpResponse("add user finish")
 
 
@@ -32,7 +37,7 @@ def report_behavior(request):
             BehaveTime =behave["BehaviorTimestamp"]
             BehaveType =behave["BehaviorType"]
             Score =behave["Score"]
-            models.Behavior.objects.create(user_id=UserId, item_id=ItemId, behave_time=BehaveTime, behave_time=BehaveTime, behave_type=BehaveType, score=Score)
+            models.Behavior.objects.create(user_id=UserId, item_id=ItemId, behave_time=BehaveTime, behave_type=BehaveType, score=Score)
         return HttpResponse("add behavior finish")
 
 
