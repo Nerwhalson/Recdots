@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# base dir path, outer backend file
+BASE_PATH = os.path.dirname(os.getcwd())
+
+REC_PATH = os.path.join(BASE_PATH, "utils", "rec_models", "save")
 
 # Application definition
 
@@ -50,6 +55,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
+    "utils.middleware.RequestLogMiddleware"
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -127,3 +134,57 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CRONJOBS = [
     ('0 */24 * * *', 'recdots.corn.offline_training','>>/offline_training_crontab.log')
 ]
+
+# log dir path
+LOGS_DIR = os.path.join(BASE_PATH, "log")
+LOGGING = {
+    # 版本
+    'version': 1,
+    # 是否禁止默认配置的记录器
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '{"time": "%(asctime)s", "level": "%(levelname)s", "method": "%(method)s", "username": "%(username)s", "sip": "%(sip)s", "dip": "%(dip)s", "path": "%(path)s", "status_code": "%(status_code)s", "reason_phrase": "%(reason_phrase)s", "func": "%(module)s.%(funcName)s:%(lineno)d",  "message": "%(message)s"}',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        }
+    },
+    # 过滤器
+    'filters': {
+        'request_info': {'()': 'utils.middleware.RequestLogFilter'},
+    },
+    'handlers': {
+        # 标准输出
+        'console': {
+            'level': 'ERROR',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard'
+        },
+        # 自定义 handlers，输出到文件
+        'restful_api': {
+            'level': 'DEBUG',
+            # 时间滚动切分
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(LOGS_DIR, 'web-log.log'),
+            'formatter': 'standard',
+            # 调用过滤器
+            'filters': ['request_info'],
+            # 每天凌晨切分
+            'when': 'MIDNIGHT',
+            # 保存 30 天
+            'backupCount': 30,
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False
+        },
+        'web.log': {
+            'handlers': ['restful_api'],
+            'level': 'INFO',
+            # 此记录器处理过的消息就不再让 django 记录器再次处理了
+            'propagate': False
+        },
+    }
+}

@@ -23,4 +23,7 @@ urlpatterns = [
     path("ReportBehavior", recdots_views.report_behavior),
     path("ReportItem", recdots_views.report_item),
     path("ReportFeedUser", recdots_views.report_user),
+    path("OfflineTrain", recdots_views.offline_training),
+    path("HotRec", recdots_views.offline_training),
+    path("InitRec", recdots_views.offline_training),
 ]

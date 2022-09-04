@@ -4,6 +4,7 @@ from django.utils.timezone import now
 
 from django.db import connection
 from . import models
+from .rec_models import MF
 
 # Create your views here.
 
@@ -52,3 +53,9 @@ def recommend(request):
     
 
     return HttpResponse("return recommendation")
+
+
+def offline_training(request):
+    MF.offline_rec()
+
+    return HttpResponse(MF.REC_PATH)
